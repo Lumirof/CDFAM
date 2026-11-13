@@ -10,7 +10,10 @@ const db = mysql.createPool({
 
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+
+    // Colunas DATE/DATETIME voltam como texto ('2026-11-13'), sem conversão de fuso.
+    dateStrings: true
 });
 
 module.exports = db;

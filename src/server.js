@@ -1,21 +1,33 @@
 
-const express = require('express');
+require('dotenv').config();
 
-const app = express();
-const PORT = 3000;
+const app = require('./app');
+const db = require('./config/database');
 
-// Middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const PORT = process.env.PORT || 3000;
 
-// Rota de teste
-app.get('/', (req, res) => {
-    res.json({
-        mensagem: 'API CDFAM funcionando! Iasmin'
-    });
-});
+async function iniciarServidor() {
+    try {
+        // Verifica a conexão com o MySQL
+        const conexao = await db.getConnection();
 
-// Inicialização do servidor
-app.listen(PORT, () => {
-    console.log(`Servidor CDFAM rodando em http://localhost:${PORT}`);
-});
+        console.log('MySQL conectado com sucesso!');
+
+        conexao.release();
+
+        // Inicia o servidor
+        app.listen(PORT, () => {
+            console.log(
+                `Servidor CDFAM rodando em http://localhost:${PORT}`
+            );
+        });
+
+    } catch (error) {
+        console.error('Erro ao conectar ao MySQL:');
+        console.error(error.message);
+
+        process.exit(1);
+    }
+}
+
+iniciarServidor();
