@@ -3,21 +3,17 @@ const { Router } = require('express');
 const noticiaRoutes = require('./noticeRoutes');
 const authRoutes = require('./authRoutes');
 const adminRoutes = require('./adminRoutes');
+const categoryNoticeRoutes = require('./categoryNoticeRoutes');
 
 const auth = require('../middlewares/auth');
 
 const router = Router();
 
-// Rotas públicas de notícias
 router.use('/noticias', noticiaRoutes.publicas);
-
-// Rotas de autenticação
+router.use('/categorias', categoryNoticeRoutes.publicas);
 router.use('/auth', authRoutes);
-
-// CRUD de notícias protegido
 router.use('/admin/noticias', auth, noticiaRoutes.admin);
-
-// CRUD de administradores protegido
 router.use('/admin/administradores', auth, adminRoutes);
+router.use('/admin/categorias', auth, categoryNoticeRoutes.admin);
 
 module.exports = router;

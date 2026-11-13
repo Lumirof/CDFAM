@@ -55,13 +55,51 @@ async function atualizar(id, dados) {
     );
 }
 
-async function desativar(id) {
-    await pool.query(
+async function desativarSeNaoForUltimo(id) {
+    const conexao = await pool.getConnection();
+    try {
+        await conexao.beginTransaction();
+
+        const [administradoresAtivos] = await conexao.query(
+            `SELECT id
+             FROM administrador
+             WHERE ativo = TRUE
+             FOR UPDATE`
+        );
+
+        if (administradoresAtivos.length <= 1) {
+            await conexao.rollback();
+            return false;
+        }
+
+        const [resultado] = await conexao.query(
+            `UPDATE administrador
+             SET ativo = FALSE
+             WHERE id = ? AND ativo = TRUE`,
+            [id]
+        );
+
+        await conexao.commit();
+        return resultado.affectedRows > 0;
+
+    } catch (err) {
+        await conexao.rollback();
+        throw err;
+
+    } finally {
+        conexao.release();
+    }
+}
+
+async function reativar(id) {
+    const [resultado] = await pool.query(
         `UPDATE administrador
-         SET ativo = FALSE
+         SET ativo = TRUE
          WHERE id = ?`,
         [id]
     );
+
+    return resultado.affectedRows > 0;
 }
 
 module.exports = {
@@ -70,5 +108,6 @@ module.exports = {
     buscarPorId,
     criar,
     atualizar,
-    desativar
+    desativarSeNaoForUltimo,
+    reativar
 };
