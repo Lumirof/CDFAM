@@ -61,10 +61,21 @@ async function desativar(req, res, next) {
     }
 }
 
+async function reativar(req, res, next) {
+    try {
+        const resultado = await adminService.reativar(req.params.id);
+
+        res.status(200).json(resultado);
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     listar,
     buscarPorId,
     criar,
     atualizar,
-    desativar
+    desativar,
+    reativar
 };

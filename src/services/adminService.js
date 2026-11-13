@@ -130,16 +130,56 @@ async function atualizar(valor, entrada) {
     return buscarPorId(id);
 }
 
-async function desativar(valor, administradorLogadoId) {
-    const id = paraId(valor);
+async function desativar(id, administradorLogadoId) {
+    const administradorId = paraId(id);
 
-    await buscarPorId(id);
-
-    if (id === Number(administradorLogadoId)) {
-        throw new AppError('Você não pode desativar sua própria conta.', 400);
+    if (Number(administradorId) === Number(administradorLogadoId)) {
+        throw new AppError(
+            'Você não pode desativar sua própria conta.',
+            400
+        );
     }
 
-    await adminRepository.desativar(id);
+    const administrador = await adminRepository.buscarPorId(administradorId);
+
+    if (!administrador) {
+        throw new AppError('Administrador não encontrado.', 404);
+    }
+
+    if (!administrador.ativo) {
+        throw new AppError('Este administrador já está desativado.', 400);
+    }
+
+    const desativado = await adminRepository.desativarSeNaoForUltimo(
+        administradorId
+    );
+
+    if (!desativado) {
+        throw new AppError(
+            'Não é possível desativar o último administrador ativo.',
+            400
+        );
+    }
+}
+
+async function reativar(id) {
+    const administradorId = paraId(id);
+
+    const administrador = await adminRepository.buscarPorId(administradorId);
+
+    if (!administrador) {
+        throw new AppError('Administrador não encontrado.', 404);
+    }
+
+    if (administrador.ativo) {
+        throw new AppError('Este administrador já está ativo.', 400);
+    }
+
+    await adminRepository.reativar(administradorId);
+
+    return {
+        mensagem: 'Administrador reativado com sucesso.'
+    };
 }
 
 module.exports = {
@@ -147,5 +187,6 @@ module.exports = {
     buscarPorId,
     criar,
     atualizar,
-    desativar
+    desativar,
+    reativar
 };
