@@ -43,9 +43,6 @@ function textoOuNulo(valor) {
   return texto || null;
 }
 
-// Aceita AAAA-MM-DD, AAAA-MM-DDTHH:mm[:ss] e AAAA-MM-DD HH:mm[:ss];
-// devolve 'AAAA-MM-DD HH:mm:ss'. Valores fora do padrão são devolvidos como estão
-// para que a validação aponte o erro.
 function normalizarDataHora(valor) {
   if (!valor) return null;
   if (typeof valor !== 'string') return valor;
