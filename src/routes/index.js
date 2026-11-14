@@ -5,6 +5,7 @@ const authRoutes = require('./authRoutes');
 const adminRoutes = require('./adminRoutes');
 const categoryNoticeRoutes = require('./categoryNoticeRoutes');
 const eventRoutes = require('./eventRoutes');
+const serviceRoutes = require('./serviceRoutes')
 
 const auth = require('../middlewares/auth');
 
@@ -18,5 +19,7 @@ router.use('/admin/noticias', auth, noticiaRoutes.admin);
 router.use('/admin/administradores', auth, adminRoutes);
 router.use('/admin/categorias', auth, categoryNoticeRoutes.admin);
 router.use('/admin/event', auth, eventRoutes.admin);
+router.use('/servicos', serviceRoutes.publicas)
+router.use('/admin/servicos', serviceRoutes.admin)
 
 module.exports = router;
