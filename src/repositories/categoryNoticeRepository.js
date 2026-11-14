@@ -6,7 +6,6 @@ async function listar() {
          FROM categoria
          ORDER BY nome ASC`
     );
-
     return linhas;
 }
 
@@ -18,7 +17,6 @@ async function buscarPorId(id) {
          LIMIT 1`,
         [id]
     );
-
     return linhas[0] || null;
 }
 
@@ -30,7 +28,6 @@ async function buscarPorSlug(slug) {
          LIMIT 1`,
         [slug]
     );
-
     return linhas[0] || null;
 }
 
@@ -40,7 +37,6 @@ async function criar(dados) {
          VALUES (?, ?)`,
         [dados.nome, dados.slug]
     );
-
     return resultado.insertId;
 }
 
