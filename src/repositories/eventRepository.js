@@ -5,7 +5,6 @@ const CONDICAO_PUBLICA = `
   AND e.publicada_em <= CURDATE()
   AND (e.publicada_ate IS NULL OR e.publicada_ate >= CURDATE())`;
 
-// Datas retornadas como string para evitar problemas de fuso/conversão para Date.
 const SELECT = `
   SELECT e.id, e.categoria_id, c.nome AS categoria_nome, c.cor AS categoria_cor,
          e.titulo, e.descricao,
