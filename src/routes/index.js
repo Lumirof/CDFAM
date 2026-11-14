@@ -10,6 +10,7 @@ const serviceHorarioRoutes = require('./serviceHorarioRoutes');
 const activityServiceRoutes = require('./activityServiceRoutes');
 const horarioFuncionamentoRoutes = require('./horarioFuncionamentoRoutes')
 const eventCategoryRoutes = require('./eventCategoryRoutes');
+const bloqueioAgendaRoutes = require('./bloqueioAgendaRoutes');
 
 const auth = require('../middlewares/auth');
 
@@ -23,6 +24,7 @@ router.use('/evento', eventRoutes.publicas);
 router.use('/atividades-servicos', activityServiceRoutes.publicas)
 router.use('/horario-funcionamento', horarioFuncionamentoRoutes.publicas)
 router.use('/evento-categoria', eventCategoryRoutes.publicas)
+router.use('/agenda-bloqueada', bloqueioAgendaRoutes.publicas)
 router.use('/auth', authRoutes);
 router.use('/admin/noticias', auth, noticiaRoutes.admin);
 router.use('/admin/administradores', auth, adminRoutes);
@@ -33,6 +35,6 @@ router.use('/admin/servico-horarios', auth, serviceHorarioRoutes.admin);
 router.use('/admin/atividades-servicos', auth, activityServiceRoutes.admin)
 router.use('/admin/horario-funcionamento', auth, horarioFuncionamentoRoutes.admin)
 router.use('/admin/evento-categoria', auth, eventCategoryRoutes.admin)
-
+router.use('/admin/agenda-bloqueada', auth, bloqueioAgendaRoutes.admin)
 
 module.exports = router;
