@@ -179,17 +179,6 @@ CREATE TABLE mapa_agendamento (
 );
 
 
-CREATE TABLE pagina_estagio (
-  id               TINYINT NOT NULL DEFAULT 1 PRIMARY KEY,
-  texto_introducao TEXT NULL,
-  atualizado_em    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  atualizado_por   INT NULL,
-  FOREIGN KEY (atualizado_por) REFERENCES administrador(id) ON DELETE SET NULL,
-  CONSTRAINT ck_pagina_estagio_unica CHECK (id = 1)
-);
-
-INSERT INTO pagina_estagio (id, texto_introducao) VALUES (1, NULL);
-
 CREATE TABLE atividade_estagio (
   id             INT AUTO_INCREMENT PRIMARY KEY,
   modalidade     ENUM('pratica_assistida','estagio_internato','residencia') NOT NULL,
