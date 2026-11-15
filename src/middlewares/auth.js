@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const pool = require('../config/database');
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 
 async function auth(req, res, next) {
     try {

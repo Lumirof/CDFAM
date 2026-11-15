@@ -52,6 +52,61 @@ async function login(entrada) {
     };
 }
 
+
+async function alterarSenha(idAdministrador, dados) {
+    const senhaAtual = typeof dados.senhaAtual === 'string'
+        ? dados.senhaAtual
+        : '';
+
+    const novaSenha = typeof dados.novaSenha === 'string'
+        ? dados.novaSenha
+        : '';
+
+    const confirmarSenha = typeof dados.confirmarSenha === 'string'
+        ? dados.confirmarSenha
+        : '';
+
+    if (!senhaAtual || !novaSenha || !confirmarSenha) {
+        throw new AppError('Todos os campos de senha são obrigatórios.', 400);
+    }
+
+    if (novaSenha.length < 8) {
+        throw new AppError('A nova senha deve ter pelo menos 8 caracteres.', 400);
+    }
+
+    if (novaSenha !== confirmarSenha) {
+        throw new AppError('A confirmação da nova senha não corresponde.', 400);
+    }
+
+    if (senhaAtual === novaSenha) {
+        throw new AppError('A nova senha deve ser diferente da senha atual.', 400);
+    }
+
+    const administrador = await adminRepository.buscarSenhaPorId(idAdministrador);
+
+    if (!administrador || !administrador.ativo) {
+        throw new AppError('Administrador não encontrado ou inativo.', 404);
+    }
+
+    const senhaCorreta = await bcrypt.compare(
+        senhaAtual,
+        administrador.senha_hash
+    );
+
+    if (!senhaCorreta) {
+        throw new AppError('A senha atual está incorreta.', 401);
+    }
+
+    const senhaHash = await bcrypt.hash(novaSenha, 10);
+
+    await adminRepository.atualizarSenha(
+        idAdministrador,
+        senhaHash
+    );
+}
+
+
 module.exports = {
-    login
+    login,
+    alterarSenha
 };

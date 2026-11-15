@@ -31,6 +31,18 @@ async function buscarPorId(id) {
     return linhas[0] || null;
 }
 
+async function buscarSenhaPorId(id) {
+    const [linhas] = await pool.query(
+        `SELECT id, senha_hash, ativo
+         FROM administrador
+         WHERE id = ?
+         LIMIT 1`,
+        [id]
+    );
+
+    return linhas[0] || null;
+}
+
 async function criar(dados) {
     const [resultado] = await pool.query(
         `INSERT INTO administrador (nome, email, senha_hash)
@@ -49,6 +61,17 @@ async function atualizar(id, dados) {
          WHERE id = ?`,
         [dados.nome, dados.email, dados.senha_hash || null, id]
     );
+}
+
+async function atualizarSenha(id, senha_hash) {
+    const [resultado] = await pool.query(
+        `UPDATE administrador
+         SET senha_hash = ?
+         WHERE id = ? AND ativo = TRUE`,
+        [senha_hash, id]
+    );
+
+    return resultado.affectedRows > 0;
 }
 
 async function desativarSeNaoForUltimo(id) {
@@ -100,6 +123,8 @@ module.exports = {
     buscarPorId,
     criar,
     atualizar,
+    buscarSenhaPorId,
+    atualizarSenha,
     desativarSeNaoForUltimo,
     reativar
 };
