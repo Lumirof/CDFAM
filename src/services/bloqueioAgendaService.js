@@ -1,5 +1,5 @@
 const bloqueioAgendaRepository = require('../repositories/bloqueioAgendaRepository');
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 
 const TIPOS_VALIDOS = ['feriado', 'manutencao', 'outro'];
 

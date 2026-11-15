@@ -7,7 +7,6 @@ async function listarPublicos() {
          WHERE ativo = TRUE
          ORDER BY dia_semana ASC, hora_inicio ASC`
     );
-
     return linhas;
 }
 
@@ -17,7 +16,6 @@ async function listarAdmin() {
          FROM horario_funcionamento
          ORDER BY dia_semana ASC, hora_inicio ASC`
     );
-
     return linhas;
 }
 
@@ -28,7 +26,6 @@ async function buscarPorId(id) {
          WHERE id = ?`,
         [id]
     );
-
     return linhas[0];
 }
 
@@ -45,7 +42,6 @@ async function criar(dados) {
             dados.atualizado_por || null
         ]
     );
-
     return resultado.insertId;
 }
 
@@ -67,7 +63,6 @@ async function atualizar(id, dados) {
             id
         ]
     );
-
     return resultado.affectedRows;
 }
 
@@ -78,7 +73,6 @@ async function desativar(id) {
          WHERE id = ?`,
         [id]
     );
-
     return resultado.affectedRows;
 }
 

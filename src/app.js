@@ -17,7 +17,6 @@ app.get('/', (req, res) => {
 
 app.use('/api', routes);
 
-// Sempre por último
 app.use(naoEncontrado);
 app.use(errorHandler);
 

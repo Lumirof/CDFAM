@@ -8,7 +8,6 @@ async function listarPublicos() {
          WHERE s.id IS NULL OR s.ativo = TRUE
          ORDER BY b.data_inicio ASC, b.hora_inicio ASC`
     );
-
     return linhas;
 }
 
@@ -19,7 +18,6 @@ async function listarAdmin() {
          LEFT JOIN servico_atendimento s ON s.id = b.servico_id
          ORDER BY b.data_inicio ASC, b.hora_inicio ASC`
     );
-
     return linhas;
 }
 
@@ -31,7 +29,6 @@ async function buscarPorId(id) {
          WHERE b.id = ?`,
         [id]
     );
-
     return linhas[0];
 }
 
@@ -52,7 +49,6 @@ async function criar(dados) {
             dados.atualizado_por || null
         ]
     );
-
     return resultado.insertId;
 }
 
@@ -80,7 +76,6 @@ async function atualizar(id, dados) {
             id
         ]
     );
-
     return resultado.affectedRows;
 }
 
@@ -90,7 +85,6 @@ async function excluir(id) {
          WHERE id = ?`,
         [id]
     );
-
     return resultado.affectedRows;
 }
 

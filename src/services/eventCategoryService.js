@@ -1,4 +1,4 @@
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const repo = require('../repositories/eventCategoryRepository');
 
 const REGEX_COR = /^#[0-9A-Fa-f]{6}$/;
