@@ -10,6 +10,8 @@ const serviceHorarioRoutes = require('./serviceHorarioRoutes');
 const activityServiceRoutes = require('./activityServiceRoutes');
 const horarioFuncionamentoRoutes = require('./horarioFuncionamentoRoutes')
 const eventCategoryRoutes = require('./eventCategoryRoutes');
+const extensionRoutes = require('./extensionRoutes');
+const extensionShiftRoutes = require('./extensionShiftRoutes');
 const nossaAgendaRoutes = require('./nossaAgendaRoutes');
 const bloqueioAgendaRoutes = require('./bloqueioAgendaRoutes');
 
@@ -25,6 +27,7 @@ router.use('/evento', eventRoutes.publicas);
 router.use('/atividades-servicos', activityServiceRoutes.publicas)
 router.use('/horario-funcionamento', horarioFuncionamentoRoutes.publicas)
 router.use('/evento-categoria', eventCategoryRoutes.publicas)
+router.use('/extensao', extensionRoutes.publicas);
 router.use('/mapa-agendamento', nossaAgendaRoutes.publicas);
 router.use('/agenda-bloqueada', bloqueioAgendaRoutes.publicas)
 router.use('/auth', authRoutes);
@@ -37,6 +40,8 @@ router.use('/admin/servico-horarios', auth, serviceHorarioRoutes.admin);
 router.use('/admin/atividades-servicos', auth, activityServiceRoutes.admin)
 router.use('/admin/horario-funcionamento', auth, horarioFuncionamentoRoutes.admin)
 router.use('/admin/evento-categoria', auth, eventCategoryRoutes.admin)
+router.use('/admin/extensao', auth, extensionRoutes.admin);
+router.use('/admin', auth, extensionShiftRoutes.admin);
 router.use('/admin/mapas-agendamento', auth, nossaAgendaRoutes.admin);
 
 router.use('/admin/agenda-bloqueada', auth, bloqueioAgendaRoutes.admin)
