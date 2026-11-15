@@ -11,6 +11,10 @@ const activityServiceRoutes = require('./activityServiceRoutes');
 const horarioFuncionamentoRoutes = require('./horarioFuncionamentoRoutes')
 const eventCategoryRoutes = require('./eventCategoryRoutes');
 const activityInternshipRoutes = require('./activityInternshipRoutes');
+const extensionRoutes = require('./extensionRoutes');
+const extensionShiftRoutes = require('./extensionShiftRoutes');
+const nossaAgendaRoutes = require('./nossaAgendaRoutes');
+const bloqueioAgendaRoutes = require('./bloqueioAgendaRoutes');
 
 const auth = require('../middlewares/auth');
 
@@ -25,6 +29,9 @@ router.use('/atividades-servicos', activityServiceRoutes.publicas)
 router.use('/horario-funcionamento', horarioFuncionamentoRoutes.publicas)
 router.use('/evento-categoria', eventCategoryRoutes.publicas)
 router.use('/atividades-estagio', activityInternshipRoutes.publicas)
+router.use('/extensao', extensionRoutes.publicas);
+router.use('/mapa-agendamento', nossaAgendaRoutes.publicas);
+router.use('/agenda-bloqueada', bloqueioAgendaRoutes.publicas)
 router.use('/auth', authRoutes);
 router.use('/admin/noticias', auth, noticiaRoutes.admin);
 router.use('/admin/administradores', auth, adminRoutes);
@@ -38,6 +45,10 @@ router.use('/admin/evento-categoria', auth, eventCategoryRoutes.admin)
 router.use('/admin/atividades-estagio', auth, activityInternshipRoutes.admin)
 
 
+router.use('/admin/extensao', auth, extensionRoutes.admin);
+router.use('/admin', auth, extensionShiftRoutes.admin);
+router.use('/admin/mapas-agendamento', auth, nossaAgendaRoutes.admin);
 
+router.use('/admin/agenda-bloqueada', auth, bloqueioAgendaRoutes.admin)
 
 module.exports = router;

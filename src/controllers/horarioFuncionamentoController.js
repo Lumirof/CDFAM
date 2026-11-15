@@ -1,4 +1,3 @@
-
 const horarioFuncionamentoService = require('../services/horarioFuncionamentoService');
 
 async function listarPublicos(req, res, next) {

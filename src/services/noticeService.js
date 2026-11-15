@@ -1,4 +1,4 @@
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const slugify = require('../utils/slugify');
 const repo = require('../repositories/noticeRepository');
 
