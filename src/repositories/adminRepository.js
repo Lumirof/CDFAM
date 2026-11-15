@@ -8,7 +8,6 @@ async function buscarPorEmail(email) {
          LIMIT 1`,
         [email]
     );
-
     return linhas[0] || null;
 }
 
@@ -18,7 +17,6 @@ async function listar() {
          FROM administrador
          ORDER BY id DESC`
     );
-
     return linhas;
 }
 
@@ -30,7 +28,6 @@ async function buscarPorId(id) {
          LIMIT 1`,
         [id]
     );
-
     return linhas[0] || null;
 }
 
@@ -40,7 +37,6 @@ async function criar(dados) {
          VALUES (?, ?, ?)`,
         [dados.nome, dados.email, dados.senha_hash]
     );
-
     return resultado.insertId;
 }
 
@@ -59,7 +55,6 @@ async function desativarSeNaoForUltimo(id) {
     const conexao = await pool.getConnection();
     try {
         await conexao.beginTransaction();
-
         const [administradoresAtivos] = await conexao.query(
             `SELECT id
              FROM administrador
@@ -78,14 +73,12 @@ async function desativarSeNaoForUltimo(id) {
              WHERE id = ? AND ativo = TRUE`,
             [id]
         );
-
         await conexao.commit();
         return resultado.affectedRows > 0;
 
     } catch (err) {
         await conexao.rollback();
         throw err;
-
     } finally {
         conexao.release();
     }
@@ -98,7 +91,6 @@ async function reativar(id) {
          WHERE id = ?`,
         [id]
     );
-
     return resultado.affectedRows > 0;
 }
 

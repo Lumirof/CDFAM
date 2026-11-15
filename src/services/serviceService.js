@@ -1,4 +1,4 @@
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const serviceRepository = require('../repositories/serviceRepository');
 
 function paraId(id) {

@@ -1,5 +1,5 @@
 const horarioFuncionamentoRepository = require('../repositories/horarioFuncionamentoRepository');
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 
 function validarDados(dados) {
     const { dia_semana, hora_inicio, hora_fim, observacao } = dados;
