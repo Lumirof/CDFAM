@@ -93,7 +93,6 @@ async function definirAtiva(id, ativa, adminId) {
 }
 
 async function remover(id) {
-  // Os turnos saem em cascata (ON DELETE CASCADE).
   await pool.query('DELETE FROM acao_extensao WHERE id = ?', [id]);
 }
 
