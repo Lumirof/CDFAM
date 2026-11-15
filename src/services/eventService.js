@@ -1,4 +1,4 @@
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const repo = require('../repositories/eventRepository');
 
 const STATUS = ['rascunho', 'publicada', 'despublicada', 'arquivada'];

@@ -1,5 +1,5 @@
 const serviceHorarioRepository = require('../repositories/serviceHorarioRepository');
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 
 function paraId(valor) {
     const id = Number(valor);

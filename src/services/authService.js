@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const adminRepository = require('../repositories/adminRepository');
 
 async function login(entrada) {
@@ -19,7 +19,6 @@ async function login(entrada) {
 
     const administrador = await adminRepository.buscarPorEmail(email);
 
-    // Não informa se o e-mail existe ou se a senha está incorreta.
     if (!administrador || !administrador.ativo) {
         throw new AppError('E-mail ou senha inválidos.', 401);
     }

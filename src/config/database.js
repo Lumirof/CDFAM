@@ -7,12 +7,9 @@ const db = mysql.createPool({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-
-    // Colunas DATE/DATETIME voltam como texto ('2026-11-13'), sem conversão de fuso.
     dateStrings: true
 });
 
