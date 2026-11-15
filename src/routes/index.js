@@ -11,6 +11,7 @@ const activityServiceRoutes = require('./activityServiceRoutes');
 const horarioFuncionamentoRoutes = require('./horarioFuncionamentoRoutes')
 const eventCategoryRoutes = require('./eventCategoryRoutes');
 const extensionRoutes = require('./extensionRoutes');
+const extensionShiftRoutes = require('./extensionShiftRoutes');
 
 const auth = require('../middlewares/auth');
 
@@ -36,7 +37,7 @@ router.use('/admin/atividades-servicos', auth, activityServiceRoutes.admin)
 router.use('/admin/horario-funcionamento', auth, horarioFuncionamentoRoutes.admin)
 router.use('/admin/evento-categoria', auth, eventCategoryRoutes.admin)
 router.use('/admin/extensao', auth, extensionRoutes.admin);
-router.use('/admin/extensao-turnos', auth, extensionRoutes.adminTurnos);
+router.use('/admin', auth, extensionShiftRoutes.admin);
 
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const AppError = require('../utils/appError');
 const repo = require('../repositories/extensionRepository');
+const turnosRepo = require('../repositories/extensionShiftRepository');
 
-const TURNOS = ['manha', 'tarde'];
 const ANO_MIN = 2000;
 const ANO_MAX = 2100;
 
@@ -10,10 +10,7 @@ const CAMPOS = [
   'coordenador_lotacao', 'publico_alvo', 'atividades', 'como_buscar_atendimento',
   'local_atendimento', 'instagram_url', 'ordem', 'ativa',
 ];
-const CAMPOS_TURNO = ['dia_semana', 'turno', 'observacao'];
 const PADRAO = { ordem: 0, ativa: true };
-
-/* ---------- Utilitários ---------- */
 
 function paraId(valor) {
   const id = Number(valor);
@@ -32,9 +29,9 @@ function paraPaginacao({ pagina, limite }) {
   return { pagina: p, limite: l, deslocamento: (p - 1) * l };
 }
 
-function selecionar(obj = {}, campos) {
+function filtrarCampos(obj = {}) {
   const resultado = {};
-  for (const campo of campos) {
+  for (const campo of CAMPOS) {
     if (obj[campo] !== undefined) resultado[campo] = obj[campo];
   }
   return resultado;
@@ -59,21 +56,6 @@ function urlHttpValida(texto) {
     return false;
   }
 }
-
-function traduzirErroDb(err) {
-  switch (err.code) {
-    case 'ER_DUP_ENTRY':
-      return new AppError('Já existe esse turno (dia da semana e turno) para esta atividade.', 409);
-    case 'ER_NO_REFERENCED_ROW_2':
-      return new AppError('Atividade de extensão não encontrada.', 404);
-    case 'ER_CHECK_CONSTRAINT_VIOLATED':
-      return new AppError('Os dados violam uma regra do banco (verifique os valores).', 400);
-    default:
-      return err;
-  }
-}
-
-/* ---------- Ações de extensão: normalizar e validar ---------- */
 
 function normalizar(d) {
   return {
@@ -126,33 +108,8 @@ function validar(d) {
   if (erros.length) throw new AppError('Dados inválidos.', 400, erros);
 }
 
-/* ---------- Turnos: normalizar e validar ---------- */
-
-function normalizarTurno(d) {
-  return {
-    dia_semana: numeroOuNulo(d.dia_semana),
-    turno: d.turno,
-    observacao: textoOuNulo(d.observacao),
-  };
-}
-
-function validarTurno(d) {
-  const erros = [];
-
-  if (d.dia_semana === null) erros.push('dia_semana é obrigatório (0 = domingo ... 6 = sábado).');
-  else if (!Number.isInteger(d.dia_semana) || d.dia_semana < 0 || d.dia_semana > 6) {
-    erros.push('dia_semana deve ser um inteiro de 0 (domingo) a 6 (sábado).');
-  }
-  if (!TURNOS.includes(d.turno)) erros.push(`turno deve ser um de: ${TURNOS.join(', ')}.`);
-  if (d.observacao && d.observacao.length > 150) erros.push('observacao deve ter no máximo 150 caracteres.');
-
-  if (erros.length) throw new AppError('Dados inválidos.', 400, erros);
-}
-
-/* ---------- Montagem das respostas ---------- */
-
 async function anexarTurnos(itens) {
-  const turnos = await repo.listarTurnosDasAcoes(itens.map((i) => i.id));
+  const turnos = await turnosRepo.listarDasAcoes(itens.map((i) => i.id));
   const porAcao = new Map();
   for (const t of turnos) {
     if (!porAcao.has(t.acao_id)) porAcao.set(t.acao_id, []);
@@ -193,14 +150,6 @@ async function listarComFiltros(query, somentePublicas) {
 const listarPublicas = (query) => listarComFiltros(query, true);
 const listarAdmin = (query) => listarComFiltros(query, false);
 
-async function buscarPorId(valor) {
-  const id = paraId(valor);
-  const acao = await repo.buscarPorId(id);
-  if (!acao) throw new AppError('Atividade de extensão não encontrada.', 404);
-  acao.turnos = await repo.listarTurnos(id);
-  return acao;
-}
-
 async function garantirAcao(valor) {
   const id = paraId(valor);
   const acao = await repo.buscarPorId(id);
@@ -208,10 +157,14 @@ async function garantirAcao(valor) {
   return acao;
 }
 
-/* ---------- CRUD das ações ---------- */
+async function buscarPorId(valor) {
+  const acao = await garantirAcao(valor);
+  acao.turnos = await turnosRepo.listarPorAcao(acao.id);
+  return acao;
+}
 
 async function criar(entrada, adminId) {
-  const dados = normalizar({ ...PADRAO, ...selecionar(entrada, CAMPOS) });
+  const dados = normalizar({ ...PADRAO, ...filtrarCampos(entrada) });
   validar(dados);
 
   const id = await repo.criar({ ...dados, atualizado_por: adminId ?? null });
@@ -221,14 +174,13 @@ async function criar(entrada, adminId) {
 async function atualizar(valor, entrada, adminId) {
   const existente = await garantirAcao(valor);
 
-  const dados = normalizar({ ...selecionar(existente, CAMPOS), ...selecionar(entrada, CAMPOS) });
+  const dados = normalizar({ ...filtrarCampos(existente), ...filtrarCampos(entrada) });
   validar(dados);
 
   await repo.atualizar(existente.id, { ...dados, atualizado_por: adminId ?? null });
   return buscarPorId(existente.id);
 }
 
-// Arquivar (ativa = false) e reativar (ativa = true)
 async function definirAtiva(valor, entrada = {}, adminId) {
   const existente = await garantirAcao(valor);
 
@@ -244,50 +196,6 @@ async function remover(valor) {
   await repo.remover(existente.id);
 }
 
-/* ---------- CRUD dos turnos ---------- */
-
-async function listarTurnos(valor) {
-  const acao = await garantirAcao(valor);
-  return repo.listarTurnos(acao.id);
-}
-
-async function criarTurno(valor, entrada) {
-  const acao = await garantirAcao(valor);
-
-  const dados = normalizarTurno(selecionar(entrada, CAMPOS_TURNO));
-  validarTurno(dados);
-
-  try {
-    const id = await repo.criarTurno(acao.id, dados);
-    return await repo.buscarTurnoPorId(id);
-  } catch (err) {
-    throw traduzirErroDb(err);
-  }
-}
-
-async function atualizarTurno(valor, entrada) {
-  const id = paraId(valor);
-  const existente = await repo.buscarTurnoPorId(id);
-  if (!existente) throw new AppError('Turno não encontrado.', 404);
-
-  const dados = normalizarTurno({ ...selecionar(existente, CAMPOS_TURNO), ...selecionar(entrada, CAMPOS_TURNO) });
-  validarTurno(dados);
-
-  try {
-    await repo.atualizarTurno(id, dados);
-  } catch (err) {
-    throw traduzirErroDb(err);
-  }
-  return repo.buscarTurnoPorId(id);
-}
-
-async function removerTurno(valor) {
-  const id = paraId(valor);
-  const existente = await repo.buscarTurnoPorId(id);
-  if (!existente) throw new AppError('Turno não encontrado.', 404);
-  await repo.removerTurno(id);
-}
-
 module.exports = {
   listarPublicas,
   listarAdmin,
@@ -296,8 +204,4 @@ module.exports = {
   atualizar,
   definirAtiva,
   remover,
-  listarTurnos,
-  criarTurno,
-  atualizarTurno,
-  removerTurno,
 };

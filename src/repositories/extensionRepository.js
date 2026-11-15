@@ -39,8 +39,6 @@ function valoresAcao(d) {
   ];
 }
 
-/* ---------- Ações de extensão ---------- */
-
 async function listar(filtros, { limite, deslocamento }) {
   const { clausula, params } = montarFiltros(filtros);
 
@@ -99,56 +97,6 @@ async function remover(id) {
   await pool.query('DELETE FROM acao_extensao WHERE id = ?', [id]);
 }
 
-/* ---------- Turnos ---------- */
-
-const ORDEM_TURNOS = "ORDER BY dia_semana ASC, FIELD(turno, 'manha', 'tarde') ASC";
-
-async function listarTurnosDasAcoes(acaoIds) {
-  if (!acaoIds.length) return [];
-  const [linhas] = await pool.query(
-    `SELECT id, acao_id, dia_semana, turno, observacao
-     FROM acao_extensao_turno
-     WHERE acao_id IN (?) ${ORDEM_TURNOS}`,
-    [acaoIds]
-  );
-  return linhas;
-}
-
-async function listarTurnos(acaoId) {
-  return listarTurnosDasAcoes([acaoId]);
-}
-
-async function buscarTurnoPorId(id) {
-  const [linhas] = await pool.query(
-    `SELECT id, acao_id, dia_semana, turno, observacao
-     FROM acao_extensao_turno WHERE id = ?`,
-    [id]
-  );
-  return linhas[0] || null;
-}
-
-async function criarTurno(acaoId, d) {
-  const [resultado] = await pool.query(
-    `INSERT INTO acao_extensao_turno (acao_id, dia_semana, turno, observacao)
-     VALUES (?, ?, ?, ?)`,
-    [acaoId, d.dia_semana, d.turno, d.observacao]
-  );
-  return resultado.insertId;
-}
-
-async function atualizarTurno(id, d) {
-  await pool.query(
-    `UPDATE acao_extensao_turno
-     SET dia_semana = ?, turno = ?, observacao = ?
-     WHERE id = ?`,
-    [d.dia_semana, d.turno, d.observacao, id]
-  );
-}
-
-async function removerTurno(id) {
-  await pool.query('DELETE FROM acao_extensao_turno WHERE id = ?', [id]);
-}
-
 module.exports = {
   listar,
   buscarPorId,
@@ -156,10 +104,4 @@ module.exports = {
   atualizar,
   definirAtiva,
   remover,
-  listarTurnosDasAcoes,
-  listarTurnos,
-  buscarTurnoPorId,
-  criarTurno,
-  atualizarTurno,
-  removerTurno,
 };

@@ -1,7 +1,5 @@
 const service = require('../services/extensionService');
 
-/* ---------- Ações de extensão ---------- */
-
 async function listarPublicas(req, res, next) {
   try {
     res.json(await service.listarPublicas(req.query));
@@ -45,33 +43,6 @@ async function remover(req, res, next) {
   } catch (err) { next(err); }
 }
 
-/* ---------- Turnos ---------- */
-
-async function listarTurnos(req, res, next) {
-  try {
-    res.json(await service.listarTurnos(req.params.id));
-  } catch (err) { next(err); }
-}
-
-async function criarTurno(req, res, next) {
-  try {
-    res.status(201).json(await service.criarTurno(req.params.id, req.body));
-  } catch (err) { next(err); }
-}
-
-async function atualizarTurno(req, res, next) {
-  try {
-    res.json(await service.atualizarTurno(req.params.id, req.body));
-  } catch (err) { next(err); }
-}
-
-async function removerTurno(req, res, next) {
-  try {
-    await service.removerTurno(req.params.id);
-    res.status(204).send();
-  } catch (err) { next(err); }
-}
-
 module.exports = {
   listarPublicas,
   listarAdmin,
@@ -80,8 +51,4 @@ module.exports = {
   atualizar,
   definirAtiva,
   remover,
-  listarTurnos,
-  criarTurno,
-  atualizarTurno,
-  removerTurno,
 };
