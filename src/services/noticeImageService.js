@@ -1,4 +1,4 @@
-const AppError = require('../utils/appError');
+const AppError = require('../utils/AppError');
 const repo = require('../repositories/noticeImageRepository');
 
 const CAMPOS = ['noticia_id', 'arquivo_url', 'texto_alt', 'legenda', 'ordem'];
@@ -75,8 +75,10 @@ function traduzirErroDb(err) {
 }
 
 async function listarPublicas(query = {}) {
-  if (!query.noticia_id) throw new AppError('noticia_id é obrigatório.', 400);
-  return repo.listar({ noticiaId: paraId(query.noticia_id), somentePublicas: true });
+  return repo.listar({
+    noticiaId: query.noticia_id ? paraId(query.noticia_id) : undefined,
+    somentePublicas: true,
+  });
 }
 
 async function listarAdmin(query = {}) {
