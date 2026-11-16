@@ -323,12 +323,11 @@ O relatório do **Checkpoint 2** reúne a identificação do problema, a coleta 
 ## Equipe
 
 | Nome |
-| --- | --- |
-| Bárbara Carvalho |
-| Cybele Chaves |
-| Giovanna Carneiro |
-| Iasmin Sena |
-| Julia Flor |
+- Bárbara Carvalho
+- Cybele Chaves
+- Giovanna Carneiro
+- Iasmin Sena
+- Julia Flor
 
 Projeto Integrado I — Sistemas e Mídias Digitais — Instituto UFC Virtual — Universidade Federal do Ceará.
 
